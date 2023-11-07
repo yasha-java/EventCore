@@ -1,0 +1,4 @@
+name: LinyCoreServerEvents
+version: '${project.version}'
+main: org.liny.linycoreserverevents.LinyCoreServerEvents
+api-version: '1.16'
