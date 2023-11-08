@@ -46,7 +46,7 @@ public final class LinyCoreServerEvents extends JavaPlugin {
 
         Objects.requireNonNull(getCommand("events")).setExecutor(this.events);
 
-        ServerEventsEnableEvent event = new ServerEventsEnableEvent();
+        ServerEventsEnableEvent event = new ServerEventsEnableEvent(this);
 
         Bukkit.getPluginManager().callEvent(event);
 
