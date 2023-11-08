@@ -24,7 +24,6 @@ public final class LinyCoreServerEvents extends JavaPlugin {
         this.math = new Math();
         this.events = new Events(this);
         this.eventSpawnManager = new EventSpawnManager(this);
-        this.eventSpawnManager.startMainScheduler();
 
     }
 
@@ -43,13 +42,15 @@ public final class LinyCoreServerEvents extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        this.isStopped = false;
+        this.eventSpawnManager.startMainScheduler();
 
         Objects.requireNonNull(getCommand("events")).setExecutor(this.events);
 
         ServerEventsEnableEvent event = new ServerEventsEnableEvent();
 
         Bukkit.getPluginManager().callEvent(event);
+
+        this.isStopped = false;
 
         Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "{LinyCoreEvents} LinyCoreEvents started!");
 
