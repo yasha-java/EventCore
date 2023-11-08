@@ -83,20 +83,24 @@ public class EventSpawnManager {
 
                             }
 
-                            if (this.lastEventTime == null) {
+                        }
 
-                                this.lastEventTime = this.main.getMath().ms2s(System.currentTimeMillis());
+                        if (this.lastEventTime == null) {
 
-                            }
+                            this.lastEventTime = this.main.getMath().ms2s(System.currentTimeMillis());
 
                         }
 
-                        if (this.main.getMath().ms2s(System.currentTimeMillis()) - this.lastEventTime <= this.nextServerEvent.getTimeSeconds()) {
+                        if (this.nextServerEvent != null) {
 
-                            this.nextServerEvent.start();
-                            this.currentServerEvent = this.nextServerEvent;
-                            this.nextServerEvent = this.serverEvents.values().stream().toList().get((int) (Math.random() * this.serverEvents.values().size()));
-                            this.lastEventTime = this.main.getMath().ms2s(System.currentTimeMillis());
+                            if (this.main.getMath().ms2s(System.currentTimeMillis()) - this.lastEventTime <= this.nextServerEvent.getTimeSeconds()) {
+
+                                this.nextServerEvent.start();
+                                this.currentServerEvent = this.nextServerEvent;
+                                this.nextServerEvent = this.serverEvents.values().stream().toList().get((int) (Math.random() * this.serverEvents.values().size()));
+                                this.lastEventTime = this.main.getMath().ms2s(System.currentTimeMillis());
+
+                            }
 
                         }
 
