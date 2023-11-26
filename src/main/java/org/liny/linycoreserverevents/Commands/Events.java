@@ -22,7 +22,7 @@ public class Events implements CommandExecutor {
 
         if (!commandSender.hasPermission("org.LinyCoreV2.EventAdministration")) return true;
 
-        if (args.length < 1) {
+        if (args.length < 2) {
 
             commandSender.sendMessage(ChatColor.GREEN + "Установлен EventFlag.isStopped:" + this.main.isStopped);
 
@@ -30,10 +30,10 @@ public class Events implements CommandExecutor {
 
         } else {
 
-            if (this.main.getEventSpawnManager().isEventRegistered(args[0])) {
+            if (this.main.getEventSpawnManager().isEventRegistered(args[1])) {
 
-                this.main.getEventSpawnManager().getRegisteredServerEvent(args[0]).start();
-                commandSender.sendMessage(ChatColor.GREEN + "Вы успешно запустили ServerEvent:" + this.main.getEventSpawnManager().getRegisteredServerEvent(args[0]).getName());
+                this.main.getEventSpawnManager().getRegisteredServerEvent(args[1]).start();
+                commandSender.sendMessage(ChatColor.GREEN + "Вы успешно запустили ServerEvent: " + this.main.getEventSpawnManager().getRegisteredServerEvent(args[1]).getName());
 
             } else {
 
@@ -42,7 +42,7 @@ public class Events implements CommandExecutor {
                 this.main.getEventSpawnManager()
                         .getRegisteredEvents()
                         .keySet()
-                        .forEach(name -> tmp.append("\n").append(name));
+                        .forEach(name -> tmp.append(" ").append(name));
 
                 commandSender.sendMessage(tmp.toString());
 

@@ -7,13 +7,11 @@ import org.liny.linycoreserverevents.Commands.Events;
 import org.liny.linycoreserverevents.Events.ServerEventsDisableEvent;
 import org.liny.linycoreserverevents.Events.ServerEventsEnableEvent;
 import org.liny.linycoreserverevents.Managers.EventSpawnManager;
-import org.liny.linycoreserverevents.Utils.Math;
 
 import java.util.Objects;
 
 public final class LinyCoreServerEvents extends JavaPlugin {
 
-    private final Math math;
     private final EventSpawnManager eventSpawnManager;
     private final Events events;
 
@@ -21,15 +19,8 @@ public final class LinyCoreServerEvents extends JavaPlugin {
 
     public LinyCoreServerEvents () {
 
-        this.math = new Math();
         this.events = new Events(this);
         this.eventSpawnManager = new EventSpawnManager(this);
-
-    }
-
-    public Math getMath () {
-
-        return this.math;
 
     }
 

@@ -1,67 +1,66 @@
 package org.liny.linycoreserverevents.Managers;
 
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.liny.linycoreserverevents.Abstract.ServerEvent;
 import org.liny.linycoreserverevents.LinyCoreServerEvents;
+import org.liny.linycoreserverevents.Utils.Math;
 
 import java.util.HashMap;
 
 public class EventSpawnManager {
 
     private final LinyCoreServerEvents main;
-
     private final HashMap<String, ServerEvent> serverEvents;
-
     private ServerEvent nextServerEvent;
-
     private ServerEvent currentServerEvent;
-
     private Long lastEventTime;
 
-    public EventSpawnManager(LinyCoreServerEvents main) {
+    public EventSpawnManager(@NotNull LinyCoreServerEvents main) {
 
         this.main = main;
         this.serverEvents = new HashMap<>();
 
     }
 
-    public void registerEvent (ServerEvent event, String name) {
+    public void registerEvent (@NotNull ServerEvent event, @NotNull String name) {
 
         this.serverEvents.put(name, event);
 
     }
 
-    public ServerEvent getNextServerEvent () {
+    public @NotNull ServerEvent getNextServerEvent () {
 
         return this.nextServerEvent;
 
     }
 
-    public ServerEvent getCurrentServerEvent () {
+    public @NotNull ServerEvent getCurrentServerEvent () {
 
         return this.currentServerEvent;
 
     }
 
-    public HashMap<String, ServerEvent> getRegisteredEvents () {
+    public @Nullable HashMap<String, ServerEvent> getRegisteredEvents () {
 
         return this.serverEvents;
 
     }
 
-    public Long getTimeForNextEvent () {
+    public @Nullable Long getTimeForNextEvent () {
 
-        return this.main.getMath().ms2s(System.currentTimeMillis()) - this.lastEventTime;
+        return Math.ms2s(System.currentTimeMillis()) - this.lastEventTime;
 
     }
 
-    public Boolean isEventRegistered (String name) {
+    public @NotNull Boolean isEventRegistered (@NotNull String name) {
 
         return this.serverEvents.containsKey(name);
 
     }
 
-    public ServerEvent getRegisteredServerEvent (String name) {
+    public @Nullable ServerEvent getRegisteredServerEvent (@NotNull String name) {
 
         return this.serverEvents.get(name);
 
@@ -79,7 +78,7 @@ public class EventSpawnManager {
 
                             if (this.nextServerEvent == null) {
 
-                                this.nextServerEvent = this.serverEvents.values().stream().toList().get((int) (Math.random() * this.serverEvents.values().size()));
+                                this.nextServerEvent = this.serverEvents.values().stream().toList().get((int) (java.lang.Math.random() * this.serverEvents.values().size()));
 
                             }
 
@@ -87,18 +86,19 @@ public class EventSpawnManager {
 
                         if (this.lastEventTime == null) {
 
-                            this.lastEventTime = this.main.getMath().ms2s(System.currentTimeMillis());
+                            this.lastEventTime = Math.ms2s(System.currentTimeMillis());
 
                         }
 
                         if (this.nextServerEvent != null) {
 
-                            if (this.main.getMath().ms2s(System.currentTimeMillis()) - this.lastEventTime <= this.nextServerEvent.getTimeSeconds()) {
+                            if (Math.ms2s(System.currentTimeMillis()) - this.lastEventTime >= this.nextServerEvent.getTimeSeconds()) {
 
                                 this.nextServerEvent.start();
+                                Bukkit.getConsoleSender().sendMessage(this.nextServerEvent.getName());
                                 this.currentServerEvent = this.nextServerEvent;
-                                this.nextServerEvent = this.serverEvents.values().stream().toList().get((int) (Math.random() * this.serverEvents.values().size()));
-                                this.lastEventTime = this.main.getMath().ms2s(System.currentTimeMillis());
+                                this.nextServerEvent = this.serverEvents.values().stream().toList().get((int) (java.lang.Math.random() * this.serverEvents.values().size()));
+                                this.lastEventTime = Math.ms2s(System.currentTimeMillis());
 
                             }
 
