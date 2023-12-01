@@ -1,6 +1,5 @@
 package org.liny.linycoreserverevents.Utils;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -54,16 +53,6 @@ public class RegionArea {
 
         if (clazz instanceof Vector2) {
 
-            /*
-            [19:07:13 INFO]:fpoint x 1569.500000 : spoint x -591.500000
-                            fpoint z 1529.500000 : spoint z -631.500000
-                            vX 1546.149737 : vZ -610.779321
-
-                            first -> false
-                            second -> false
-                            all -> false
-             */
-
             this.fPoint = new Vector2(location.getX() + xOffset, location.getZ() + zOffset);
             this.sPoint = new Vector2(location.getX() - xOffset, location.getZ() - zOffset);
 
@@ -101,29 +90,8 @@ public class RegionArea {
             double x = location.getX();
             double z = location.getZ();
 
-            /*
-            Bukkit.getConsoleSender().sendMessage("fpoint x %f : fpoint x %f\nspoint z %f : spoint z %f\nvX %f : vZ %f"
-                    .formatted(((Vector2) this.fPoint).x,
-                            ((Vector2) this.fPoint).z,
-                            ((Vector2) this.sPoint).x,
-                            ((Vector2) this.sPoint).z,
-                            x, z));
-            Bukkit.getConsoleSender().sendMessage("first -> %s\nsecond -> %s\nall -> %s"
-                    .formatted((((Vector2) this.fPoint).x <= x && x <= ((Vector2) this.sPoint).x),
-                            (((Vector2) this.fPoint).z <= z && z <= ((Vector2) this.sPoint).z),
-                            (((Vector2) this.fPoint).x <= x && x <= ((Vector2) this.sPoint).x) && (((Vector2) this.fPoint).z <= z && z <= ((Vector2) this.sPoint).z)));
-
-            [19:07:13 INFO]:fpoint x 1569.500000 : fpoint z -591.500000
-                            spoint x 1529.500000 : spoint z -631.500000
-                            vX 1546.149737 : vZ -610.779321
-
-                            first -> false
-                            second -> false
-                            all -> false
-             */
-
-            return (((Vector2) this.fPoint).x >= x && x >= ((Vector2) this.sPoint).x) && // 1569 >= 1546(true) && 1546 >= 1529(true) - true
-                    (((Vector2) this.fPoint).z >= z && z >= ((Vector2) this.sPoint).z); // -591 >= -610(true) && -610 >= -631(true) - true   | true
+            return (((Vector2) this.fPoint).x >= x && x >= ((Vector2) this.sPoint).x) &&
+                    (((Vector2) this.fPoint).z >= z && z >= ((Vector2) this.sPoint).z);
          } else {
             double x = location.getX();
             double y = location.getY();
