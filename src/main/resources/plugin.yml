@@ -2,6 +2,8 @@ name: LinyCoreServerEvents
 version: '${project.version}'
 main: org.liny.linycoreserverevents.LinyCoreServerEvents
 api-version: '1.16'
+authors: [Liny]
 commands:
   events:
+    permission: org.LinyCoreV2.op
     aliases: [ ]
