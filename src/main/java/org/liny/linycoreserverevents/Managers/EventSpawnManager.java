@@ -4,20 +4,20 @@ import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.liny.linycoreserverevents.Abstract.ServerEvent;
-import org.liny.linycoreserverevents.LinyCoreServerEvents;
+import org.liny.linycoreserverevents.EventCore;
 import org.liny.linycoreserverevents.Utils.Math;
 
 import java.util.HashMap;
 
 public class EventSpawnManager {
 
-    private final LinyCoreServerEvents main;
+    private final EventCore main;
     private final HashMap<String, ServerEvent> serverEvents;
     private ServerEvent nextServerEvent;
     private ServerEvent currentServerEvent;
     private Long lastEventTime;
 
-    public EventSpawnManager(@NotNull LinyCoreServerEvents main) {
+    public EventSpawnManager(@NotNull EventCore main) {
 
         this.main = main;
         this.serverEvents = new HashMap<>();
@@ -36,13 +36,13 @@ public class EventSpawnManager {
 
     }
 
-    public @NotNull ServerEvent getCurrentServerEvent () {
+    public @Nullable ServerEvent getCurrentServerEvent () {
 
         return this.currentServerEvent;
 
     }
 
-    public @Nullable HashMap<String, ServerEvent> getRegisteredEvents () {
+    public @NotNull HashMap<String, ServerEvent> getRegisteredEvents () {
 
         return this.serverEvents;
 

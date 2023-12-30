@@ -3,23 +3,21 @@ package org.liny.linycoreserverevents;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.liny.linycoreserverevents.Commands.Events;
+import org.liny.linycoreserverevents.Commands.EventCommand;
 import org.liny.linycoreserverevents.Events.ServerEventsDisableEvent;
 import org.liny.linycoreserverevents.Events.ServerEventsEnableEvent;
 import org.liny.linycoreserverevents.Managers.EventSpawnManager;
 
 import java.util.Objects;
 
-public final class LinyCoreServerEvents extends JavaPlugin {
+public final class EventCore extends JavaPlugin {
 
     private final EventSpawnManager eventSpawnManager;
-    private final Events events;
 
     public Boolean isStopped = true;
 
-    public LinyCoreServerEvents () {
+    public EventCore() {
 
-        this.events = new Events(this);
         this.eventSpawnManager = new EventSpawnManager(this);
 
     }
@@ -35,7 +33,8 @@ public final class LinyCoreServerEvents extends JavaPlugin {
 
         this.eventSpawnManager.startMainScheduler();
 
-        Objects.requireNonNull(getCommand("events")).setExecutor(this.events);
+        Objects.requireNonNull(getCommand("events")).setExecutor(new EventCommand.EventsExecator(this));
+        Objects.requireNonNull(getCommand("events")).setTabCompleter(new EventCommand.EventsTabCompleter(this));
 
         ServerEventsEnableEvent event = new ServerEventsEnableEvent(this);
 

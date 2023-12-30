@@ -3,21 +3,21 @@ package org.liny.linycoreserverevents.Events;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
-import org.liny.linycoreserverevents.LinyCoreServerEvents;
+import org.liny.linycoreserverevents.EventCore;
 
 public class ServerEventsEnableEvent extends Event {
 
     public final static HandlerList HANDLER_LIST = new HandlerList();
 
-    private final LinyCoreServerEvents main;
+    private final EventCore main;
 
-    public ServerEventsEnableEvent (LinyCoreServerEvents main) {
+    public ServerEventsEnableEvent (EventCore main) {
 
         this.main = main;
 
     }
 
-    public LinyCoreServerEvents getMain () {
+    public EventCore getMain () {
         return this.main;
     }
 
