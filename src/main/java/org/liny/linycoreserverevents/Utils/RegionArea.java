@@ -6,17 +6,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-public class RegionArea {
+public class RegionArea<R extends Vector> {
 
-    public @NotNull Vector fPoint = new Vector2(), sPoint = new Vector2();
+    public @Nullable Vector fPoint, sPoint;
     public @Nullable List<String> container = new ArrayList<>();
 
     public RegionArea () {}
-    public RegionArea (@NotNull Vector fPoint, @NotNull Vector sPoint) {
-
-        if (!Objects.equals(fPoint.getClass(), sPoint.getClass())) throw new IllegalArgumentException(" Can't create RegionArea with " + fPoint.getClass() + ", " + sPoint.getClass());
+    public RegionArea (@NotNull R fPoint, @NotNull R sPoint) {
 
         this.fPoint = fPoint; this.sPoint = sPoint;
 
@@ -128,7 +125,5 @@ public class RegionArea {
         );
 
     }
-
-    public @NotNull Object type () { return fPoint.getClass(); }
 
 }
