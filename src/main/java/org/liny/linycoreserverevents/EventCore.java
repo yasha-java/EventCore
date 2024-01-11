@@ -7,10 +7,12 @@ import org.liny.linycoreserverevents.Commands.EventCommand;
 import org.liny.linycoreserverevents.Events.ServerEventsDisableEvent;
 import org.liny.linycoreserverevents.Events.ServerEventsEnableEvent;
 import org.liny.linycoreserverevents.Managers.EventSpawnManager;
+import org.linytech.providemanager.Interfaces.Provider;
+import org.linytech.providemanager.ProvideManager;
 
 import java.util.Objects;
 
-public final class EventCore extends JavaPlugin {
+public final class EventCore extends JavaPlugin implements Provider {
 
     private final EventSpawnManager eventSpawnManager;
 
@@ -31,6 +33,8 @@ public final class EventCore extends JavaPlugin {
     @Override
     public void onEnable() {
 
+        ProvideManager.Manager.getInstance().registerProvider(this);
+
         this.eventSpawnManager.startMainScheduler();
 
         Objects.requireNonNull(getCommand("events")).setExecutor(new EventCommand.EventsExecator(this));
@@ -49,6 +53,8 @@ public final class EventCore extends JavaPlugin {
     @Override
     public void onDisable() {
 
+        ProvideManager.Manager.getInstance().removeProvider(this.getClass());
+
         this.isStopped = true;
 
         ServerEventsDisableEvent event = new ServerEventsDisableEvent();
@@ -59,4 +65,8 @@ public final class EventCore extends JavaPlugin {
 
     }
 
+    @Override
+    public Object getProvider() {
+        return this;
+    }
 }

@@ -80,14 +80,18 @@ public class EventSpawnManager {
 
                                 this.nextServerEvent = this.serverEvents.values().stream().toList().get((int) (java.lang.Math.random() * this.serverEvents.values().size()));
 
+                                while (this.nextServerEvent.getTimeSeconds() == null) {
+
+                                    this.nextServerEvent = this.serverEvents.values().stream().toList().get((int) (java.lang.Math.random() * this.serverEvents.values().size()));
+
+                                }
+
                             }
 
                         }
 
                         if (this.lastEventTime == null) {
-
                             this.lastEventTime = Math.ms2s(System.currentTimeMillis());
-
                         }
 
                         if (this.nextServerEvent != null) {
