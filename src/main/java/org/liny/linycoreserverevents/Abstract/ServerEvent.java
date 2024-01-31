@@ -1,13 +1,17 @@
 package org.liny.linycoreserverevents.Abstract;
 
-public abstract class ServerEvent {
+public interface ServerEvent {
+    void start ();
 
-    public abstract void start ();
+    void stop ();
 
-    public abstract void stop ();
+    Integer getTimeSeconds ();
 
-    public abstract Integer getTimeSeconds ();
+    String getName ();
 
-    public abstract String getName ();
+    Boolean canSpawn ();
 
+    Float getPercent ();
+
+    Boolean isClosed ();
 }

@@ -6,7 +6,7 @@
 
     <groupId>org.liny</groupId>
     <artifactId>EventCore</artifactId>
-    <version>1.0</version>
+    <version>2.0-ALPHA</version>
     <packaging>jar</packaging>
 
     <name>LinyCoreServerEvents</name>
@@ -52,29 +52,24 @@
         </resources>
     </build>
 
-    <repositories>
-        <repository>
-            <id>papermc-repo</id>
-            <url>https://repo.papermc.io/repository/maven-public/</url>
-        </repository>
-        <repository>
-            <id>sonatype</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
-            <groupId>com.destroystokyo.paper</groupId>
+            <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.16.5-R0.1-SNAPSHOT</version>
+            <version>1.20.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.linytech</groupId>
-            <artifactId>ProvideManager</artifactId>
+            <groupId>org.liny</groupId>
+            <artifactId>Notify</artifactId>
             <version>1.0</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.liny</groupId>
+            <artifactId>NewMath</artifactId>
+            <version>1.0</version>
+            <!-- <scope>provided</scope> - If you use org.linytech.CoreV3 package -->
         </dependency>
     </dependencies>
 </project>

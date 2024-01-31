@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public class Vector2 extends Vector {
+public class Vector2 implements Vector {
 
     public @NotNull Double x = 0.0D, z = 0.0D;
     public @Nullable String stringContainer;
