@@ -2,6 +2,7 @@ package org.liny.linycoreserverevents.Commands;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -17,6 +18,7 @@ import org.liny.notify.LinyColor;
 import org.liny.notify.NNotifyEngine;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -31,19 +33,20 @@ public class EventCommand {
         }
 
         @Override
+        @SuppressWarnings("unstable")
         public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
             if (args.length < 1) {
-                commandSender.sendMessage(NNotifyEngine.getAcceptMessage("Вы "+LinyColor.RED.toNMSAmpersand()+"не правильно"+
-                        LinyColor.WHITE.toNMSAmpersand()+" ввели команду!", false));
+                commandSender.sendMessage(NNotifyEngine.getAcceptMessage("Вы " + LinyColor.RED.toNMSAmpersand() + "не правильно" +
+                        LinyColor.WHITE.toNMSAmpersand() + " ввели команду!", false));
                 return true;
             } else if (args[0].equalsIgnoreCase("delay")) {
                 Optional<ServerEvent> futureEvent = this.main.getManager().getData().getFutureEvent();
                 if (futureEvent.isEmpty()) {
                     commandSender.sendMessage(NNotifyEngine.getAcceptMessage("Следующего эвента <liny.red>не обнаружено<liny.white>. Скорее всего это ошибка! Администрация скоро решит эту проблему", false));
                 } else {
-                    commandSender.sendMessage(NNotifyEngine.getAcceptMessage("Следующий эвент: " + LinyColor.GREEN.toNMSAmpersand() +
-                            futureEvent.get().getName() + LinyColor.WHITE.toNMSAmpersand() + ". До него осталось: " + LinyColor.GREEN.toNMSAmpersand() +
-                            this.main.getManager().getFutureEventTime() + LinyColor.WHITE.toNMSAmpersand() + " секунд", true));
+                    commandSender.sendMessage(NNotifyEngine.getAcceptMessage("Следующий эвент: <liny.green>" +
+                            futureEvent.get().getName() + "<liny.white>. До него осталось: " +
+                            this.main.getManager().getFutureEventTimeHours(), true));
                 }
                 return true;
             } else if (args[0].equalsIgnoreCase("all")) {
@@ -54,7 +57,11 @@ public class EventCommand {
 
                 TextComponent.Builder allEvents = Component.text().append(NNotifyEngine.getNotifyMessage("Вот список существующих эвентов"));
                 this.main.getManager().getEvents().forEach(pair -> {
-                    allEvents.appendNewline().append(Component.text(LinyColor.GREEN.toNMSAmpersand() + "✧ " + LinyColor.WHITE.toNMSAmpersand() + pair.getValue()));
+                    allEvents.appendNewline()
+                            .append(Component.text("✧").color(LinyColor.GREEN.toColor()).decorate(TextDecoration.BOLD))
+                            .appendSpace()
+                            .append(Component.text(pair.getValue()))
+                            .color(LinyColor.WHITE.toColor());
                 });
 
                 commandSender.sendMessage(allEvents.asComponent());
@@ -66,25 +73,36 @@ public class EventCommand {
                     return true;
                 }
 
-                Optional<ServerEvent> event = this.main.getManager().getEvent(args[1]);
+                LinkedList<String> name = new LinkedList<>(List.of(args));
+                name.remove(0);
+                String compiledName = String.join(" ", name);
+
+                Optional<ServerEvent> event = this.main.getManager().getEvent(compiledName);
+
+                Bukkit.getConsoleSender().sendMessage(NNotifyEngine.getNotifyMessage("Finding ServerEvent -> " + compiledName));
 
                 if (event.isEmpty()) {
                     commandSender.sendMessage(NNotifyEngine.getAcceptMessage("Такого эвента не существует!", false));
+                    Bukkit.getConsoleSender().sendMessage(NNotifyEngine.getAcceptMessage("Event not found -> " + compiledName + "!", false));
                     return true;
                 }
 
                 if (!event.get().isClosed()) {
                     commandSender.sendMessage(NNotifyEngine.getAcceptMessage("Эвент в данное время запущен!", false));
+                    Bukkit.getConsoleSender().sendMessage(NNotifyEngine.getAcceptMessage("Event currently working -> " + compiledName + "!", false));
                     return true;
                 }
 
                 try {
                     event.get().start();
-                } catch (Throwable ignored) {
+                } catch (Throwable e) {
                     commandSender.sendMessage(NNotifyEngine.getAcceptMessage("Произошла ошибка при запуске эвента!", false));
-                } finally {
-                    commandSender.sendMessage(NNotifyEngine.getAcceptMessage("Эвент запущен!", true));
+                    Bukkit.getConsoleSender().sendMessage(NNotifyEngine.getAcceptMessage("Event " + compiledName + " thrown exception -> " + e.getLocalizedMessage() + "!", false));
                 }
+
+                commandSender.sendMessage(NNotifyEngine.getAcceptMessage("Эвент запущен!", true));
+                Bukkit.getConsoleSender().sendMessage(NNotifyEngine.getAcceptMessage("Event started -> " + compiledName + "!", true));
+                return true;
             } else if (args[0].equalsIgnoreCase("disable")) {
                 if (!commandSender.hasPermission("org.LinyCoreV2.administrator")) {
                     commandSender.sendMessage(NNotifyEngine.getNoPermission("/events disable"));
@@ -104,9 +122,10 @@ public class EventCommand {
                         this.main.getManager().initTask(1L, TimeUnit.SECONDS, this.main);
                     } catch (ESMCurrentlyWorking e) {
                         commandSender.sendMessage(NNotifyEngine.getAcceptMessage("Произошла ошибка при включении основного цикла!", false));
-                    } finally {
-                        commandSender.sendMessage(NNotifyEngine.getAcceptMessage("Вы успешно включили спавн эвентов!", true));
+                        return true;
                     }
+
+                    commandSender.sendMessage(NNotifyEngine.getAcceptMessage("Вы успешно включили спавн эвентов!", true));
                     return true;
                 }
                 return true;
@@ -114,15 +133,39 @@ public class EventCommand {
                 Optional<ServerEvent> previousEvent = this.main.getManager().getData().getPreviousEvent();
 
                 if (previousEvent.isPresent()) {
-                    commandSender.sendMessage(NNotifyEngine.getAcceptMessage("Прошлый эвент был: "+
-                            LinyColor.GREEN.toNMSAmpersand()+previousEvent.get().getName(), true));
+                    commandSender.sendMessage(NNotifyEngine.getAcceptMessage("Прошлый эвент был: " +
+                            LinyColor.GREEN.toNMSAmpersand() + previousEvent.get().getName(), true));
                 } else {
                     commandSender.sendMessage(NNotifyEngine.getAcceptMessage("На сервере еще <liny.red>не проходило<liny.white> эвентов", false));
                 }
 
                 return true;
+            } else if (args[0].equalsIgnoreCase("version")) {
+                commandSender.sendMessage(NNotifyEngine.getNotifyMessage("Версия EventCore: <liny.green>" + this.main.getPluginMeta().getVersion() + " by LinyTech"));
+                return true;
+            } else if (args[0].equalsIgnoreCase("current")) {
+                Optional<ServerEvent> currentEvent = this.main.getManager().getData().getCurrentEvent();
+
+                if (currentEvent.isPresent()) {
+                    commandSender.sendMessage(NNotifyEngine.getAcceptMessage("Сейчас проходит эвент: " +
+                            LinyColor.GREEN.toNMSAmpersand() + currentEvent.get().getName(), true));
+                } else {
+                    commandSender.sendMessage(NNotifyEngine.getAcceptMessage("На сервере "+LinyColor.RED+"не проходит"+LinyColor.WHITE+" эвентов!", false));
+                }
+
+                return true;
+            } else if (args[0].equalsIgnoreCase("status")) {
+                if (!this.main.getManager().isTaskWorking()) {
+                    commandSender.sendMessage(NNotifyEngine.getNotifyMessage("Спавн эвентов "+LinyColor.RED+"отключен"+LinyColor.WHITE+"!"));
+                } else {
+                    commandSender.sendMessage(NNotifyEngine.getNotifyMessage("На данный момент спавн эвентов "+LinyColor.GREEN+"включен"+LinyColor.WHITE+"!"));
+                }
+
+                return true;
+            } else {
+                commandSender.sendMessage(NNotifyEngine.getNotifyMessage("Вы <liny.red>не правильно<liny.white> ввели команду! Пожалуйста, пользуйтесь подсказками."));
+                return true;
             }
-            return true;
         }
     }
 
@@ -136,11 +179,13 @@ public class EventCommand {
         @Override
         public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
             List<String> complete = new ArrayList<>();
-            Bukkit.getConsoleSender().sendMessage(String.join(" ", args));
             if (args.length < 2) {
                 complete.add("delay");
                 complete.add("all");
                 complete.add("last");
+                complete.add("version");
+                complete.add("status");
+                complete.add("current");
                 if (commandSender.hasPermission("org.LinyCore.administrator")) {
                     complete.add("start");
                     complete.add("enable");

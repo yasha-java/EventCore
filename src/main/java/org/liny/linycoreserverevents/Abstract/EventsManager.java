@@ -98,6 +98,20 @@ public interface EventsManager {
     @SuppressWarnings("unused")
     @NotNull Long getFutureEventTime ();
 
+
+    /**
+     * @return time of pattern {%dч. %dмин.}
+     */
+    @SuppressWarnings("unused")
+    @NotNull String getFutureEventTimeHours ();
+
+
+    /**
+     * @return true if task working, false if not
+     */
+    @SuppressWarnings("unused")
+    @NotNull Boolean isTaskWorking ();
+
     /**
      * @return true if event registered,
      *         false if event not registered

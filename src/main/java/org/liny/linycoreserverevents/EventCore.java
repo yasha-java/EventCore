@@ -42,8 +42,9 @@ public final class EventCore extends JavaPlugin {
             );
         } catch (ESMCurrentlyWorking ignored) {
             Bukkit.getConsoleSender().sendMessage(NNotifyEngine.getAcceptMessage("Task can't start! Enable task from command", false));
-        } finally {
-            Bukkit.getConsoleSender().sendMessage(NNotifyEngine.getAcceptMessage("Task started!", true));
+            return;
         }
+
+        Bukkit.getConsoleSender().sendMessage(NNotifyEngine.getAcceptMessage("Task started!", true));
     }
 }

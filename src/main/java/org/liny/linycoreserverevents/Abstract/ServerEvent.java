@@ -1,5 +1,7 @@
 package org.liny.linycoreserverevents.Abstract;
 
+import org.bukkit.plugin.Plugin;
+
 public interface ServerEvent {
     void start ();
 
@@ -14,4 +16,6 @@ public interface ServerEvent {
     Float getPercent ();
 
     Boolean isClosed ();
+
+    Plugin getMain ();
 }

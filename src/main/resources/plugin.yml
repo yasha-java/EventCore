@@ -2,7 +2,7 @@ name: EventCore
 version: '${project.version}'
 main: org.liny.linycoreserverevents.EventCore
 api-version: '1.16'
-authors: [Liny]
+authors: [LinyTech]
 commands:
   events:
     aliases: []

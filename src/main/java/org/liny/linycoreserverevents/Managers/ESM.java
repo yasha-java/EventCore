@@ -11,6 +11,9 @@ import org.liny.linycoreserverevents.Abstract.ServerEvent;
 import org.liny.linycoreserverevents.Data.EventData;
 import org.liny.linycoreserverevents.Exceptions.ESMCurrentlyWorking;
 import org.liny.linycoreserverevents.Exceptions.EventsEmpty;
+import org.liny.notify.FastLogger;
+import org.liny.notify.LinyColor;
+import org.liny.notify.NNotifyEngine;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -96,8 +99,7 @@ public class ESM implements EventsManager {
     }
 
     public void initTask (@NotNull Long time, @NotNull TimeUnit unit, @NotNull Plugin main /* for starting of other plugins */) throws ESMCurrentlyWorking {
-        if (currentTask != null) if (!currentTask.isCancelled()) throw new ESMCurrentlyWorking(); //else for joke lol
-        if (currentTask == null) throw new ESMCurrentlyWorking();                                 //else for joke lol
+        if (currentTask != null) throw new ESMCurrentlyWorking(); //else for joke lol
         Bukkit.getAsyncScheduler().runAtFixedRate(
                 main,
                 eventTask,
@@ -111,6 +113,7 @@ public class ESM implements EventsManager {
         try {
             if (currentTask == null) currentTask = task;
             if (task.isCancelled()) return;
+            if (this.isEventsEmpty()) return;
 
             ServerEvent futureEvent = null;
             if (this.data.getFutureEvent().isEmpty()) {
@@ -118,17 +121,33 @@ public class ESM implements EventsManager {
                     if (!this.data.getCurrentEvent().get().isClosed()) return;
                 }
                 futureEvent = this.getRandomServerEvent();
+                if (futureEvent == null) return;
                 this.data.setFutureEvent(futureEvent);
             }
             if (futureEvent == null) futureEvent = this.data.getFutureEvent().get();
 
-            if ((this.timeOfLastEvent+futureEvent.getTimeSeconds()) < ms2s(System.currentTimeMillis())) {
-                if (futureEvent.canSpawn()) {
+            if (this.data.getCurrentEvent().isPresent()) {
+                if (this.data.getCurrentEvent().get().isClosed()) {
                     this.data.setPreviousEvent(this.data.getCurrentEvent().get());
+                    this.data.setCurrentEvent(null);
+                }
+            }
+
+            if (this.getFutureEventTime() < 0) {
+                if (futureEvent.canSpawn()) {
+                    if (this.data.getCurrentEvent().isPresent()) {
+                        this.data.setPreviousEvent(this.data.getCurrentEvent().get());
+                    }
                     this.data.setCurrentEvent(futureEvent);
                     this.data.setFutureEvent(null);
 
-                    this.data.getCurrentEvent().get().start();
+                    try {
+                        Bukkit.getScheduler().runTask(
+                                this.data.getCurrentEvent().get().getMain(),
+                                this.data.getCurrentEvent().get()::start
+                        );
+                    } catch (Throwable ignored) {}
+
                 } else {
                     ServerEvent nextEvent;
                     try {
@@ -138,15 +157,28 @@ public class ESM implements EventsManager {
                     }
                     if (nextEvent == null) return;
 
-                    nextEvent.start();
+                    try {
+                        Bukkit.getScheduler().runTask(
+                                nextEvent.getMain(),
+                                nextEvent::start
+                        );
+                    } catch (Throwable ignored) {}
 
                     this.data.setPreviousEvent(futureEvent);
                     this.data.setCurrentEvent(nextEvent);
                     this.data.setFutureEvent(null);
                 }
+                this.timeOfLastEvent = ms2s(System.currentTimeMillis());
             }
-        } catch (Throwable ignored) {
+        } catch (Throwable e) {
+            Bukkit.getConsoleSender().sendMessage(NNotifyEngine.getAcceptMessage("Killing EventCore task -> "+e.getLocalizedMessage(), false));
+            if (this.closeTask()) {
+                Bukkit.getConsoleSender().sendMessage(NNotifyEngine.getAcceptMessage("Successfully closing EventCore task", true));
+            } else {
+                Bukkit.getConsoleSender().sendMessage(NNotifyEngine.getAcceptMessage("Unsuccessfully closing EventCore task", false));
+            }
             task.cancel();
+            currentTask = null;
         }
     };
 
@@ -162,6 +194,28 @@ public class ESM implements EventsManager {
         if (this.data.getFutureEvent().isPresent())
             return (timeOfLastEvent+this.data.getFutureEvent().get().getTimeSeconds()) - ms2s(System.currentTimeMillis());
         else return 0L;
+    }
+
+    @Override
+    public @NotNull String getFutureEventTimeHours() {
+        if (this.getFutureEventTime() < 0) {
+            FastLogger.warning("EventManager", "Time < 0");
+            return "0";
+        }
+
+        long hours = this.getFutureEventTime() / 3600;
+        long minutes = (this.getFutureEventTime() % 3600) / 60;
+        long seconds = this.getFutureEventTime() % 60;
+
+        return String.format(LinyColor.GREEN+"%d"+LinyColor.WHITE+ "ч. "
+                +LinyColor.GREEN+"%d"+LinyColor.WHITE+"мин."
+                +LinyColor.GREEN+"%d"+LinyColor.WHITE+"сек.", hours, minutes, seconds);
+    }
+
+    @Override
+    public @NotNull Boolean isTaskWorking() {
+        if (currentTask == null) return false;
+        else return currentTask.isCancelled();
     }
 
     @Override
@@ -181,6 +235,7 @@ public class ESM implements EventsManager {
         if (currentTask == null) return true;
         try {
             currentTask.cancel();
+            currentTask = null;
         } catch (Throwable ignored) {
             return false;
         }
