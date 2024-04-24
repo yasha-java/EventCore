@@ -13,7 +13,7 @@ Note: If you have maven installed from Intellij idea and it is not listed in the
 ```
 
 Well! Now you need to add the project to the Maven configuration:
-```maven
+```xml
 <dependency>
     <groupId>org.linytech</groupId>
     <artifactId>EventCore</artifactId>
