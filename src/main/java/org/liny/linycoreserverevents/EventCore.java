@@ -8,6 +8,8 @@ import org.liny.linycoreserverevents.Abstract.EventsManager;
 import org.liny.linycoreserverevents.Commands.EventCommand;
 import org.liny.linycoreserverevents.Exceptions.ESMCurrentlyWorking;
 import org.liny.linycoreserverevents.Managers.ESM;
+import org.liny.linycoreserverevents.Utils.RegionArea;
+import org.liny.linycoreserverevents.Utils.Vector3;
 import org.liny.notify.NNotifyEngine;
 
 import java.util.Objects;
@@ -33,6 +35,8 @@ public final class EventCore extends JavaPlugin {
         Objects.requireNonNull(getCommand("events")).setExecutor(new EventCommand.EventsExecutor(this));
         Objects.requireNonNull(getCommand("events")).setTabCompleter(new EventCommand.EventsTabCompleter(this));
         Bukkit.getConsoleSender().sendMessage(NNotifyEngine.getAcceptMessage("Commands registered!", true));
+
+        RegionArea<Vector3> area = new RegionArea<>();
 
         try {
             this.manager.initTask(

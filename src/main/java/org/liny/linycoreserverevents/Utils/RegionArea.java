@@ -113,27 +113,27 @@ public class RegionArea<R extends Vector> {
     }
 
 
-    public @NotNull Vector randomPoint () {
+    public @NotNull R randomPoint () {
 
         if (fPoint instanceof Vector2) {
 
-            return new Vector2(
+            return (R) new Vector2(
 
-                    ((((Vector2) Objects.requireNonNull(this.sPoint))).x + (java.lang.Math.random() * ((((Vector2)this.fPoint)).x - (((Vector2)this.sPoint)).x))),
+                    ((((Vector2) Objects.requireNonNull(this.sPoint))).x + (Math.random() * ((((Vector2)this.fPoint)).x - (((Vector2)this.sPoint)).x))),
 
-                    ((((Vector2)this.sPoint)).z + (java.lang.Math.random() * ((((Vector2)this.fPoint)).z - (((Vector2)this.sPoint)).z)))
+                    ((((Vector2)this.sPoint)).z + (Math.random() * ((((Vector2)this.fPoint)).z - (((Vector2)this.sPoint)).z)))
 
             );
 
         }
 
-        return new Vector3(
+        return (R) new Vector3(
 
-                ((((Vector3) Objects.requireNonNull(this.sPoint))).x + (java.lang.Math.random() * ((((Vector3) Objects.requireNonNull(this.fPoint))).x - (((Vector3)this.sPoint)).x))),
+                ((((Vector3) Objects.requireNonNull(this.sPoint))).x + (Math.random() * ((((Vector3) Objects.requireNonNull(this.fPoint))).x - (((Vector3)this.sPoint)).x))),
 
-                ((((Vector3)this.sPoint)).y + (java.lang.Math.random() * ((((Vector3)this.fPoint)).y - (((Vector3)this.sPoint)).y))),
+                ((((Vector3)this.sPoint)).y + (Math.random() * ((((Vector3)this.fPoint)).y - (((Vector3)this.sPoint)).y))),
 
-                ((((Vector3)this.sPoint)).z + (java.lang.Math.random() * ((((Vector3)this.fPoint)).z - (((Vector3)this.sPoint)).z)))
+                ((((Vector3)this.sPoint)).z + (Math.random() * ((((Vector3)this.fPoint)).z - (((Vector3)this.sPoint)).z)))
 
         );
 
