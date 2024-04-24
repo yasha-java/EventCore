@@ -1,12 +1,16 @@
-# SynchronizedServerEvents
-## Hi everyone.  This is a library for creating synchronized game events for Minecraft server.
+# EventCore
+### Hi everyone.  This is a library for creating synchronized game events for Minecraft server.
 
 # Install
-## Maven
-You can install this depency from console: ```mvn install:install-file -Dfile="Path/to/EventCore.jar" -DgroupId=org.linytech -DartifactId=EventCore -Dversion=2.0-UNSTABLE```
+You can install this depency from console: 
+```cmd
+mvn install:install-file -Dfile="Path/to/EventCore.jar" -DgroupId=org.linytech -DartifactId=EventCore -Dversion=2.0-UNSTABLE
+```
 
 Note: If you have maven installed from Intellij idea and it is not listed in the PATH for the Windows console, you can try this:
-```"<Path/to/Intellij/IDEA>plugins\maven\lib\maven3\bin\mvn.cmd"```
+```cmd
+"<Path/to/Intellij/IDEA>plugins\maven\lib\maven3\bin\mvn.cmd"
+```
 
 Well! Now you need to add the project to the Maven configuration:
 ```maven
