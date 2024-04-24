@@ -74,17 +74,7 @@
             <groupId>org.liny</groupId>
             <artifactId>Notify</artifactId>
             <version>1.0</version>
-            <scope>provided</scope>
-            <!-- <scope>provided</scope> - If you use org.linytech.CoreV3 package -->
-            <!-- <scope>compile</scope> - If you not use org.linytech.CoreV3 package -->
-        </dependency>
-        <dependency>
-            <groupId>org.liny</groupId>
-            <artifactId>NewMath</artifactId>
-            <version>1.0</version>
-            <scope>provided</scope>
-            <!-- <scope>provided</scope> - If you use org.linytech.CoreV3 package -->
-            <!-- <scope>compile</scope> - If you not use org.linytech.CoreV3 package -->
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

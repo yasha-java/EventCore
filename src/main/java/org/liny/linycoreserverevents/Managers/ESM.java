@@ -5,12 +5,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.liny.Pair;
 import org.liny.linycoreserverevents.Abstract.EventsManager;
 import org.liny.linycoreserverevents.Abstract.ServerEvent;
 import org.liny.linycoreserverevents.Data.EventData;
 import org.liny.linycoreserverevents.Exceptions.ESMCurrentlyWorking;
 import org.liny.linycoreserverevents.Exceptions.EventsEmpty;
+import org.liny.linycoreserverevents.Utils.Pair;
 import org.liny.notify.FastLogger;
 import org.liny.notify.LinyColor;
 import org.liny.notify.NNotifyEngine;
@@ -171,6 +171,11 @@ public class ESM implements EventsManager {
                 this.timeOfLastEvent = ms2s(System.currentTimeMillis());
             }
         } catch (Throwable e) {
+            Bukkit.getConsoleSender().sendMessage(NNotifyEngine.getAcceptMessage("Error on main task -> "+e.getMessage(), false));
+
+            Bukkit.getConsoleSender().sendMessage(NNotifyEngine.getAcceptMessage("<liny.red>Stacktrace -> ", false));
+            e.printStackTrace(System.err);
+            /*
             Bukkit.getConsoleSender().sendMessage(NNotifyEngine.getAcceptMessage("Killing EventCore task -> "+e.getLocalizedMessage(), false));
             if (this.closeTask()) {
                 Bukkit.getConsoleSender().sendMessage(NNotifyEngine.getAcceptMessage("Successfully closing EventCore task", true));
@@ -179,6 +184,7 @@ public class ESM implements EventsManager {
             }
             task.cancel();
             currentTask = null;
+            */
         }
     };
 
@@ -214,8 +220,7 @@ public class ESM implements EventsManager {
 
     @Override
     public @NotNull Boolean isTaskWorking() {
-        if (currentTask == null) return false;
-        else return currentTask.isCancelled();
+        return currentTask != null;
     }
 
     @Override

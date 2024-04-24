@@ -4,7 +4,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -101,6 +100,7 @@ public class EventCommand {
                 }
 
                 commandSender.sendMessage(NNotifyEngine.getAcceptMessage("Эвент запущен!", true));
+                this.main.getManager().getData().setCurrentEvent(event.get());
                 Bukkit.getConsoleSender().sendMessage(NNotifyEngine.getAcceptMessage("Event started -> " + compiledName + "!", true));
                 return true;
             } else if (args[0].equalsIgnoreCase("disable")) {
@@ -110,7 +110,7 @@ public class EventCommand {
                     if (this.main.getManager().closeTask()) {
                         commandSender.sendMessage(NNotifyEngine.getAcceptMessage("Вы успешно выключили основной цикл!", true));
                     } else {
-                        commandSender.sendMessage(NNotifyEngine.getAcceptMessage("роизошла ошибка при выключении основного цикла!", false));
+                        commandSender.sendMessage(NNotifyEngine.getAcceptMessage("Произошла ошибка при выключении основного цикла!", false));
                     }
                 }
                 return true;
@@ -150,7 +150,7 @@ public class EventCommand {
                     commandSender.sendMessage(NNotifyEngine.getAcceptMessage("Сейчас проходит эвент: " +
                             LinyColor.GREEN.toNMSAmpersand() + currentEvent.get().getName(), true));
                 } else {
-                    commandSender.sendMessage(NNotifyEngine.getAcceptMessage("На сервере "+LinyColor.RED+"не проходит"+LinyColor.WHITE+" эвентов!", false));
+                    commandSender.sendMessage(NNotifyEngine.getAcceptMessage("В данное время "+LinyColor.RED+"нету запущенных"+LinyColor.WHITE+" эвентов!", false));
                 }
 
                 return true;
@@ -161,6 +161,43 @@ public class EventCommand {
                     commandSender.sendMessage(NNotifyEngine.getNotifyMessage("На данный момент спавн эвентов "+LinyColor.GREEN+"включен"+LinyColor.WHITE+"!"));
                 }
 
+                return true;
+            } else if (args[0].equalsIgnoreCase("stop")) {
+                if (!commandSender.hasPermission("org.LinyCoreV2.administrator")) {
+                    commandSender.sendMessage(NNotifyEngine.getNoPermission("/events stop"));
+                    return true;
+                }
+
+                LinkedList<String> name = new LinkedList<>(List.of(args));
+                name.remove(0);
+                String compiledName = String.join(" ", name);
+
+                Optional<ServerEvent> event = this.main.getManager().getEvent(compiledName);
+
+                Bukkit.getConsoleSender().sendMessage(NNotifyEngine.getNotifyMessage("Finding ServerEvent -> " + compiledName));
+
+                if (event.isEmpty()) {
+                    commandSender.sendMessage(NNotifyEngine.getAcceptMessage("Такого эвента не существует!", false));
+                    Bukkit.getConsoleSender().sendMessage(NNotifyEngine.getAcceptMessage("Event not found -> " + compiledName + "!", false));
+                    return true;
+                }
+
+                if (event.get().isClosed()) {
+                    commandSender.sendMessage(NNotifyEngine.getAcceptMessage("Эвент в данное время не запущен!", false));
+                    Bukkit.getConsoleSender().sendMessage(NNotifyEngine.getAcceptMessage("Event not working -> " + compiledName + "!", false));
+                    return true;
+                }
+
+                try {
+                    event.get().stop();
+                } catch (Throwable e) {
+                    commandSender.sendMessage(NNotifyEngine.getAcceptMessage("Произошла ошибка при остановке эвента!", false));
+                    Bukkit.getConsoleSender().sendMessage(NNotifyEngine.getAcceptMessage("Event " + compiledName + " thrown exception -> " + e.getLocalizedMessage() + "!", false));
+                }
+
+                commandSender.sendMessage(NNotifyEngine.getAcceptMessage("Эвент остановлен!", true));
+                this.main.getManager().getData().setCurrentEvent(event.get());
+                Bukkit.getConsoleSender().sendMessage(NNotifyEngine.getAcceptMessage("Event stopped -> " + compiledName + "!", true));
                 return true;
             } else {
                 commandSender.sendMessage(NNotifyEngine.getNotifyMessage("Вы <liny.red>не правильно<liny.white> ввели команду! Пожалуйста, пользуйтесь подсказками."));
@@ -189,10 +226,11 @@ public class EventCommand {
                 if (commandSender.hasPermission("org.LinyCore.administrator")) {
                     complete.add("start");
                     complete.add("enable");
+                    complete.add("stop");
                     complete.add("disable");
                 }
                 return complete;
-            } else if (args[0].equalsIgnoreCase("start")){
+            } else if (args[0].equalsIgnoreCase("start") || args[0].equalsIgnoreCase("stop")){
                 if (this.main.getManager().isEventsEmpty()) {
                     complete.add("Эвентов не зарегистрировано, обратитесь к технической администрации!");
                 } else {
