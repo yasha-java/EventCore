@@ -73,7 +73,6 @@ public RegionArea (@NotNull Vector clazz, @NotNull Location location, @NotNull D
 This class has algorithms for managing an entire area on the map. It is parameterized from Vector3(for accounting for x, y, z) and from Vector2(for accounting for x, z without accounting for y).
 And it also has such simple methods that are probably enough to implement some events:
 ```java
-public @NotNull Boolean checkPoint (@NotNull Double x, @NotNull Double y, @Nullable Double z);
 public @NotNull Collection<Player> getContainedPlayers (); //Parallel StreamAPI Used
 public @NotNull Boolean checkPoint (@NotNull Double x, @NotNull Double y, @Nullable Double z);
 public @NotNull Boolean checkPoint(@NotNull Location location);
