@@ -46,7 +46,7 @@ public class MyEvent implements ServerEvent {
 }
 ```
 
-Well, now we can register this event in the EventsManager. You can get it through the Bukkit service system::
+Well, now we can register this event in the EventsManager. You can get it through the Bukkit service system:
 ```java
 RegisteredServiceProvider<EventsManager> rsp = Bukkit.getServicesManager().getRegistration(EventsManager.class);
 
